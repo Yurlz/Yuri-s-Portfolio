@@ -1,0 +1,23 @@
+.root {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--liquid-metal-base, #1a1a1a);
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.root[data-webgl="false"] {
+  background:
+    radial-gradient(ellipse at 22% 28%, var(--liquid-metal-highlight) 0%, transparent 38%),
+    radial-gradient(ellipse at 78% 74%, var(--liquid-metal-mid) 0%, transparent 46%),
+    linear-gradient(125deg, var(--liquid-metal-base), var(--liquid-metal-mid) 52%, var(--liquid-metal-base));
+}
+
+.root[data-webgl="false"] .canvas {
+  visibility: hidden;
+}

@@ -1,0 +1,84 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #1a1a1a;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  background: #f7f5f0;
+}
+
+.wordmark {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(3rem, 13.75vw, 13rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.065em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.word {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.letterMask {
+  display: block;
+  overflow: hidden;
+  padding: 0.08em 0.055em;
+  margin: 0 -0.055em;
+}
+
+.letter {
+  display: block;
+  transform: translateY(115%);
+}
+
+.photoGap {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  width: 0;
+  height: 0.73em;
+  overflow: hidden;
+}
+
+.inlineImage {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  max-width: none;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: translateX(-50%);
+  filter: grayscale(1) contrast(1.25);
+}
+
+.movingImage {
+  position: absolute;
+  z-index: 2;
+  visibility: hidden;
+  overflow: hidden;
+  background: #283ec9;
+}
+
+.movingImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: grayscale(1) contrast(1.25);
+}
