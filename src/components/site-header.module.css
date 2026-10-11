@@ -4,6 +4,12 @@
   color: #1a1a1a;
 }
 
+.fixed {
+  position: fixed;
+  inset: 0 0 auto;
+  background: #f7f5f0;
+}
+
 .header[data-menu-open="true"] {
   position: fixed;
   top: 0;
