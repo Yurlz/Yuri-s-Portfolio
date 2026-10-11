@@ -43,10 +43,10 @@ export const projects: Project[] = [
     coverForeground: "#35412E",
   },
   {
-    id: "isa",
-    name: "Isa",
+    id: "Emily",
+    name: "Emily",
     role: "Graphic Design",
-    timeline: "3 month",
+    timeline: "2 month",
     year: "2025",
     team: null,
     coverBackground: "#EDDDD2",
