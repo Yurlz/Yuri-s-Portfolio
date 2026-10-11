@@ -8,6 +8,10 @@ To change the email or add social profiles, copy `.env.example` to `.env.local`,
 
 Scrolling uses GSAP ScrollSmoother after the entrance finishes. Its settings live in `src/components/smooth-scroll.tsx`: `smooth: 1.05` on desktop and `smoothTouch: 0.12` on touch devices. Reduced motion uses native scrolling. Menu and policy dialogs pause smoothing, section links use ScrollSmoother navigation, and the About pin and Skillset reveals follow the smoothed position.
 
+Project titles and previews open individual pages at `#/work/<project-id>`. The pages keep the portfolio's header, menu, typography, colours and footer, with pinned information beside a vertical gallery on desktop and a single column on smaller screens. Hash routes support direct links and reloads on static hosting.
+
+Project descriptions, disciplines, colour palettes and galleries live in `src/data/project-case-studies.ts`. Custom galleries display their images in order; projects without one show the cover, palette and detail crop. Project navigation is immediate, and gallery reveals respect reduced motion.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:
