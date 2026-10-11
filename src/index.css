@@ -64,6 +64,12 @@ body {
   }
 }
 
+html[data-smooth-cursor="true"],
+html[data-smooth-cursor="true"] body,
+html[data-smooth-cursor="true"] body * {
+  cursor: none !important;
+}
+
 .logo-pointer-trail {
   position: absolute;
   inset: 0;
