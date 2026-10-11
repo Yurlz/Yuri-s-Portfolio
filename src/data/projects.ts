@@ -13,11 +13,12 @@ export interface Project {
   team: string | null;
   image?: string;
   href?: string;
+  hrefLabel?: string;
   coverBackground: string;
   coverForeground: string;
 }
 
-export const projects: Project[] = [
+const allProjects: Project[] = [
   {
     id: "redragon",
     name: "Redragon",
@@ -26,6 +27,8 @@ export const projects: Project[] = [
     year: "2024 - present",
     team: "Marketing",
     image: redragonCard,
+    href: "https://www.redragon.site/",
+    hrefLabel: "Ver website da Redragon",
     coverBackground: "#202020",
     coverForeground: "#F7F5F0",
   },
@@ -48,6 +51,8 @@ export const projects: Project[] = [
     year: "2025",
     team: null,
     image: kriaCard,
+    href: "https://novo.redragon.com.br/dragon-soul-redragon-x-kria",
+    hrefLabel: "Ver coleção completa",
     coverBackground: "#DDE3D7",
     coverForeground: "#35412E",
   },
@@ -74,3 +79,6 @@ export const projects: Project[] = [
     coverForeground: "#F7F5F0",
   },
 ];
+
+// Temporarily hide Solid while keeping its project data available.
+export const projects = allProjects.filter((project) => project.id !== "solid");
