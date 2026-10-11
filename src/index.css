@@ -993,7 +993,7 @@ html[data-smooth-cursor="true"] body * {
   }
 
   .project-row,
-  .project-row button *,
+  .project-row a *,
   .project-expanded,
   .project-details,
   .project-preview {
