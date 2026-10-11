@@ -18,8 +18,8 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: "solid",
-    name: "Solid",
+    id: "redragon",
+    name: "Redragon",
     role: "Graphic · Web Design · Social Media",
     timeline: "2 years",
     year: "2024 - present",
