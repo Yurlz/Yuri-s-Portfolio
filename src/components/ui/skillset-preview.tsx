@@ -16,7 +16,7 @@ export function SkillsetPreview({ variant }: { variant: SkillsetPreviewVariant }
       src={previewImages[variant]}
       alt=""
       draggable={false}
-      className="h-full w-full object-cover"
+      className="h-full w-full object-contain"
     />
   );
 }
