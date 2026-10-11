@@ -2,6 +2,7 @@ import emilyCard from "@/assets/emily-card.png";
 import kaledoCard from "@/assets/kaledo-card.png";
 import kriaCard from "@/assets/kria-card.png";
 import redragonCard from "@/assets/redragon-card.png";
+import solidCard from "@/assets/solid-card.png";
 
 export interface Project {
   id: string;
@@ -60,5 +61,16 @@ export const projects: Project[] = [
     image: emilyCard,
     coverBackground: "#EDDDD2",
     coverForeground: "#663A29",
+  },
+  {
+    id: "solid",
+    name: "Solid",
+    role: "Graphic · Web Design · Social Media",
+    timeline: "2 years",
+    year: "2024 - present",
+    team: "Marketing",
+    image: solidCard,
+    coverBackground: "#202020",
+    coverForeground: "#F7F5F0",
   },
 ];
