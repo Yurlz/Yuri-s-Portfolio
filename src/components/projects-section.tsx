@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { ProjectWaveText } from "@/components/ui/project-wave-text";
 import { projects, type Project } from "@/data/projects";
+import { projectPath } from "@/data/project-case-studies";
 import { cn } from "@/lib/utils";
 
 function ProjectPreview({ project, index }: { project: Project; index: number }) {
@@ -69,7 +70,7 @@ export function ProjectsSection() {
         onPointerLeave={(event) => {
           if (
             event.pointerType === "mouse" &&
-            !event.currentTarget.querySelector("button:focus-visible")
+            !event.currentTarget.querySelector("a:focus-visible")
           ) {
             setActiveProject(isDesktop ? projects[0]?.id ?? null : null);
           }
@@ -81,7 +82,7 @@ export function ProjectsSection() {
         }}
       >
         {projects.map((project, index) => {
-          const isActive = activeProject === project.id;
+          const isActive = !isDesktop || activeProject === project.id;
           const fields = [
             { label: "Role", value: project.role },
             { label: "Timeline", value: project.timeline },
@@ -99,16 +100,12 @@ export function ProjectsSection() {
                   setActiveProject(project.id);
                 }
               }}
+              onFocus={() => setActiveProject(project.id)}
             >
               <h3 className="lg:mr-[370px]">
-                <button
-                  type="button"
-                  aria-expanded={isActive}
-                  aria-controls={`project-details-${project.id}`}
+                <a
+                  href={projectPath(project)}
                   className="flex w-full cursor-pointer items-center justify-between gap-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
-                  onClick={() => {
-                    setActiveProject((current) => current === project.id ? null : project.id);
-                  }}
                 >
                   <span
                     className={cn(
@@ -125,10 +122,10 @@ export function ProjectsSection() {
                       isActive ? "border-black text-black" : "border-neutral-300 text-neutral-400",
                     )}
                   >
-                    <ProjectWaveText text={isActive ? "View projects" : "View details"} />
+                    <ProjectWaveText text="View project" />
                     <ArrowRight className="h-4 w-4 stroke-[1.5] transition-transform duration-300" />
                   </span>
-                </button>
+                </a>
               </h3>
 
               <div
@@ -151,20 +148,14 @@ export function ProjectsSection() {
                   </dl>
 
                   <div className="project-preview mt-6 w-full lg:absolute lg:right-0 lg:top-6 lg:mt-0 lg:w-[330px]">
-                    {project.href ? (
-                      <a
-                        href={project.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`Open ${project.name} project`}
-                        tabIndex={isActive ? 0 : -1}
-                        className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
-                      >
-                        <ProjectPreview project={project} index={index} />
-                      </a>
-                    ) : (
+                    <a
+                      href={projectPath(project)}
+                      aria-label={`Open ${project.name} project`}
+                      tabIndex={isActive ? 0 : -1}
+                      className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+                    >
                       <ProjectPreview project={project} index={index} />
-                    )}
+                    </a>
                   </div>
                 </div>
               </div>
