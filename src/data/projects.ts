@@ -1,3 +1,8 @@
+import emilyCard from "@/assets/emily-card.png";
+import kaledoCard from "@/assets/kaledo-card.png";
+import kriaCard from "@/assets/kria-card.png";
+import redragonCard from "@/assets/redragon-card.png";
+
 export interface Project {
   id: string;
   name: string;
@@ -19,6 +24,7 @@ export const projects: Project[] = [
     timeline: "2 years",
     year: "2024 - present",
     team: "Marketing",
+    image: redragonCard,
     coverBackground: "#202020",
     coverForeground: "#F7F5F0",
   },
@@ -29,6 +35,7 @@ export const projects: Project[] = [
     timeline: "1 month",
     year: "2025",
     team: null,
+    image: kaledoCard,
     coverBackground: "#DFD7E8",
     coverForeground: "#35263F",
   },
@@ -39,6 +46,7 @@ export const projects: Project[] = [
     timeline: "3 month",
     year: "2025",
     team: null,
+    image: kriaCard,
     coverBackground: "#DDE3D7",
     coverForeground: "#35412E",
   },
@@ -49,6 +57,7 @@ export const projects: Project[] = [
     timeline: "2 month",
     year: "2025",
     team: null,
+    image: emilyCard,
     coverBackground: "#EDDDD2",
     coverForeground: "#663A29",
   },
