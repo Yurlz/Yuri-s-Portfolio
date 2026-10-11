@@ -6,6 +6,7 @@ import { Typewriter } from '@/components/ui/typewriter-text';
 import { LogoPointerTrail } from '@/components/ui/logo-pointer-trail';
 import { SmoothCursor } from '@/components/ui/smooth-cursor';
 import { EntranceAnimation } from '@/components/ui/entrance-animation';
+import { PortfolioRouter } from '@/components/portfolio-router';
 import { AboutSection } from '@/components/about-section';
 import { ProjectsSection } from '@/components/projects-section';
 import { SkillsetSection } from '@/components/skillset-section';
@@ -25,6 +26,15 @@ function initialIntroStage(): IntroStage {
 }
 
 export default function App() {
+  return (
+    <>
+      <SmoothCursor />
+      <PortfolioRouter><PortfolioHome /></PortfolioRouter>
+    </>
+  );
+}
+
+function PortfolioHome() {
   const [policy, setPolicy] = useState<StudioPolicy | null>(null);
   const [introStage, setIntroStage] = useState<IntroStage>(initialIntroStage);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -39,7 +49,6 @@ export default function App() {
 
   return (
     <>
-      <SmoothCursor />
       {introStage !== 'complete' && (
         <EntranceAnimation
           contentRef={contentRef}
