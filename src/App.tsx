@@ -4,6 +4,7 @@ import { SmoothScroll } from '@/components/smooth-scroll';
 import { FlipWords } from '@/components/ui/flip-words';
 import { Typewriter } from '@/components/ui/typewriter-text';
 import { LogoPointerTrail } from '@/components/ui/logo-pointer-trail';
+import { SmoothCursor } from '@/components/ui/smooth-cursor';
 import { EntranceAnimation } from '@/components/ui/entrance-animation';
 import { AboutSection } from '@/components/about-section';
 import { ProjectsSection } from '@/components/projects-section';
@@ -38,6 +39,7 @@ export default function App() {
 
   return (
     <>
+      <SmoothCursor />
       {introStage !== 'complete' && (
         <EntranceAnimation
           contentRef={contentRef}
