@@ -13,7 +13,7 @@ const menuLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
-export function SiteHeader({ contentRef }: { contentRef: RefObject<HTMLDivElement> }) {
+export function SiteHeader({ contentRef, fixed = false }: { contentRef: RefObject<HTMLDivElement>; fixed?: boolean }) {
   const [open, setOpen] = useState(false);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -95,7 +95,7 @@ export function SiteHeader({ contentRef }: { contentRef: RefObject<HTMLDivElemen
   }, []);
 
   const header = (
-      <header data-menu-open={open} className={`${styles.header} hero-header mx-auto flex h-[74px] w-full max-w-[1440px] shrink-0 items-center justify-between px-6 sm:px-10 lg:px-12`}>
+      <header data-menu-open={open} className={`${styles.header} ${fixed ? styles.fixed : ''} hero-header mx-auto flex h-[74px] w-full max-w-[1440px] shrink-0 items-center justify-between px-6 sm:px-10 lg:px-12`}>
         <a href="#home" onClick={() => setOpen(false)} className={`${styles.brand} text-sm font-semibold uppercase tracking-widest`}>
           YURLZ®
         </a>
@@ -116,8 +116,8 @@ export function SiteHeader({ contentRef }: { contentRef: RefObject<HTMLDivElemen
 
   return (
     <>
-      <div ref={placeholderRef} className="h-[74px] shrink-0">{!open && header}</div>
-      {open && createPortal(header, document.body)}
+      <div ref={placeholderRef} className="h-[74px] shrink-0">{!open && !fixed && header}</div>
+      {(open || fixed) && createPortal(header, document.body)}
       {createPortal(<>
       <div ref={scrimRef} aria-hidden="true" className={styles.scrim} data-menu-scrim={open ? "open" : "closed"} onClick={() => setOpen(false)} />
       <div ref={frameRef} className={styles.frame}>
