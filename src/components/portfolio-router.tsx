@@ -4,16 +4,18 @@ import { ProjectPage } from "@/components/project-page";
 import { projectFromHash } from "@/data/project-case-studies";
 import { ScrollSmoother, ScrollTrigger } from "@/lib/gsap";
 import "./project-page.css";
+import { useLanguage } from "@/i18n/language-context";
 
 export function PortfolioRouter({ children }: { children: ReactNode }) {
+  const { t } = useLanguage();
   const [project, setProject] = useState(() => projectFromHash(location.hash));
   const projectRef = useRef(project);
 
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = project ? `${project.name} — Yurlz Studio` : "Yurlz | Portfolio";
+    document.title = project ? `${project.name} — Yurlz Studio` : t.pageTitle;
     return () => { document.title = previousTitle; };
-  }, [project]);
+  }, [project, t.pageTitle]);
 
   useEffect(() => {
     function navigate(hash: string, updateHistory: boolean) {
