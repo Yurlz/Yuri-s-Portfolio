@@ -14,8 +14,7 @@ import { SignatureSection } from '@/components/signature-section';
 import { ContactSection } from '@/components/contact-section';
 import { StudioFooter, StudioPolicyDialog, type StudioPolicy } from '@/components/studio-footer';
 import portrait from '@/assets/minha-foto.jpg';
-
-const presentationWords = ['cute', 'better', 'modern'];
+import { useLanguage } from '@/i18n/language-context';
 
 type IntroStage = 'loading' | 'revealing' | 'complete';
 
@@ -35,17 +34,14 @@ export default function App() {
 }
 
 function PortfolioHome() {
+  const { language, t } = useLanguage();
   const [policy, setPolicy] = useState<StudioPolicy | null>(null);
   const [introStage, setIntroStage] = useState<IntroStage>(initialIntroStage);
   const contentRef = useRef<HTMLDivElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
   const revealPortfolio = useCallback(() => setIntroStage('revealing'), []);
   const completeEntrance = useCallback(() => setIntroStage('complete'), []);
-  const categories = [
-    'Web Designer',
-    'UX | UI',
-    'Graphic Designer',
-  ];
+  const categories = t.hero.categories;
 
   return (
     <>
@@ -60,7 +56,7 @@ function PortfolioHome() {
     <SmoothScroll enabled={introStage === 'complete'} contentRef={contentRef}>
     <div id="smooth-content" ref={contentRef} data-intro-stage={introStage} aria-busy={introStage !== 'complete'} className="bg-[#F7F5F0] text-[#1A1A1A] selection:bg-black selection:text-white">
       <main>
-        <section id="home" aria-label="Home" className="flex h-[100svh] flex-col pb-16">
+        <section id="home" aria-label={t.navigation.home} className="flex h-[100svh] flex-col pb-16">
           {/* Header */}
           <SiteHeader contentRef={contentRef} />
 
@@ -71,25 +67,26 @@ function PortfolioHome() {
             <div className="hero-copy flex flex-col justify-center gap-5 pt-8 lg:pt-0">
               <div className="space-y-2">
                 <h1
-                  aria-label="Oh, Hello!"
+                  aria-label={t.hero.greeting}
                   className="relative text-6xl font-bold sm:text-7xl lg:text-8xl tracking-tight leading-[0.95]"
                 >
-                  <span aria-hidden="true" className="invisible block">Oh, Hello!|</span>
+                  <span aria-hidden="true" className="invisible block">{t.hero.greeting}|</span>
                   <span aria-hidden="true" className="absolute inset-0">
                     {introStage !== 'loading' && (
-                      <Typewriter text="Oh, Hello!" speed={100} deleteSpeed={50} delay={2000} highlightColor="#283EC9" loop />
+                      <Typewriter key={language} text={t.hero.greeting} speed={100} deleteSpeed={50} delay={2000} highlightColor="#283EC9" loop />
                     )}
                   </span>
                 </h1>
                 <p className="text-lg md:text-xl leading-snug md:leading-snug font-normal text-black max-w-md">
-                  <span className="block">Want a project?</span>
+                  <span className="block">{t.hero.question}</span>
                   <span className="block">
-                    Build{' '}
+                    {t.hero.beforeWord}{' '}
                     <FlipWords
-                      words={presentationWords}
+                      key={language}
+                      words={t.hero.words}
                       className="px-0 font-bold text-neutral-900 dark:text-neutral-900"
                     />{' '}
-                    websites with me.
+                    {t.hero.afterWord}
                   </span>
                 </p>
               </div>
@@ -112,7 +109,7 @@ function PortfolioHome() {
               <div ref={portraitRef} className="hero-portrait relative aspect-[6/7] max-h-full w-full overflow-hidden bg-neutral-200 lg:aspect-auto lg:h-full">
                 <img
                   src={portrait}
-                  alt="Yuri Rocha Retrato"
+                  alt={t.hero.portrait}
                   className="w-full h-full object-cover object-center grayscale contrast-125"
                 />
                 <LogoPointerTrail />
