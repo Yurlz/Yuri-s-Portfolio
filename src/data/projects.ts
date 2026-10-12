@@ -3,6 +3,7 @@ import kaledoCard from "@/assets/kaledo-card.png";
 import kriaCard from "@/assets/kria-card.png";
 import redragonCard from "@/assets/redragon-card.png";
 import solidCard from "@/assets/solid-card.png";
+import type { Translations } from "@/i18n/translations";
 
 export interface Project {
   id: string;
@@ -82,3 +83,16 @@ const allProjects: Project[] = [
 
 // Temporarily hide Solid while keeping its project data available.
 export const projects = allProjects.filter((project) => project.id !== "solid");
+
+export function localizeProject(project: Project, t: Translations): Project {
+  const copy = t.projectContent[project.id as keyof Translations["projectContent"]];
+  if (!copy) return project;
+  return {
+    ...project,
+    role: copy.role,
+    timeline: copy.timeline,
+    year: copy.year,
+    team: copy.team,
+    hrefLabel: copy.hrefLabel,
+  };
+}
