@@ -5,14 +5,18 @@ import { SmoothScroll, useSmoothScroll } from "@/components/smooth-scroll";
 import { StudioFooter, StudioPolicyDialog, type StudioPolicy } from "@/components/studio-footer";
 import { HoverWaveText } from "@/components/ui/hover-wave-text";
 import { getProjectCaseStudy, projectPath } from "@/data/project-case-studies";
-import { projects, type Project } from "@/data/projects";
+import { projects, localizeProject, type Project } from "@/data/projects";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { useLanguage } from "@/i18n/language-context";
+import { interpolate } from "@/i18n/translations";
 
-function ProjectCase({ project }: { project: Project }) {
+function ProjectCase({ project: originalProject }: { project: Project }) {
+  const { t } = useLanguage();
+  const project = localizeProject(originalProject, t);
   const layoutRef = useRef<HTMLElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
   const { smoother } = useSmoothScroll();
-  const study = getProjectCaseStudy(project);
+  const study = getProjectCaseStudy(project, t);
   const hasCustomGallery = Boolean(study.gallery?.length);
   const showProjectArtwork = !hasCustomGallery || study.preserveArtwork === true;
   const index = projects.findIndex((item) => item.id === project.id);
@@ -68,34 +72,34 @@ function ProjectCase({ project }: { project: Project }) {
       <div ref={infoRef} className="project-case-info">
         <div>
           <div className="project-case-top" data-project-intro>
-            <a href="#projects" className="project-case-back hover-wave"><ArrowLeft size={14} aria-hidden="true" /><HoverWaveText text="All projects" /></a>
+            <a href="#projects" className="project-case-back hover-wave"><ArrowLeft size={14} aria-hidden="true" /><HoverWaveText text={t.projects.all} /></a>
             <span className="project-case-number">{String(index + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
           </div>
           <div className="project-case-title-mask"><h1 id="project-title" tabIndex={-1} data-project-intro>{project.name}</h1></div>
           <div className="project-case-description">
             <div className="project-case-year" data-project-intro>
-              <p>[ {project.year ?? "Selected work"} ]</p>
+              <p>[ {project.year ?? t.projects.selected} ]</p>
               {project.timeline && <p className="project-case-duration">{project.timeline}</p>}
             </div>
             <div>
-              <ul className="project-case-disciplines" aria-label="Project disciplines" data-project-intro>
+              <ul className="project-case-disciplines" aria-label={t.projects.disciplines} data-project-intro>
                 {study.disciplines.map((discipline) => <li key={discipline}>{discipline}</li>)}
               </ul>
               <p className="project-case-summary" data-project-intro>{study.description}</p>
-              {project.team && <p className="project-case-team" data-project-intro><span>Team</span>{project.team}</p>}
-              {project.href && <a href={project.href} target="_blank" rel="noreferrer" className="project-case-visit hover-wave" data-project-intro><HoverWaveText text={project.hrefLabel ?? "Visit project"} /><ArrowUpRight size={16} aria-hidden="true" /></a>}
+              {project.team && <p className="project-case-team" data-project-intro><span>{t.projects.team}</span>{project.team}</p>}
+              {project.href && <a href={project.href} target="_blank" rel="noreferrer" className="project-case-visit hover-wave" data-project-intro><HoverWaveText text={project.hrefLabel ?? t.projects.visit} /><ArrowUpRight size={16} aria-hidden="true" /></a>}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="project-case-gallery" aria-label={`${project.name} project gallery`}>
+      <div className="project-case-gallery" aria-label={interpolate(t.projects.gallery, { name: project.name })}>
         {showProjectArtwork && project.image && <figure className="project-case-artwork" data-project-image>
-          <img src={project.image} alt={`${project.name} — project artwork`} loading="eager" decoding="async" onLoad={() => ScrollTrigger.refresh()} />
+          <img src={project.image} alt={interpolate(t.projects.artwork, { name: project.name })} loading="eager" decoding="async" onLoad={() => ScrollTrigger.refresh()} />
         </figure>}
 
         {(!hasCustomGallery || study.preservePalette === true) && <figure className="project-case-artwork" data-project-image>
-          <div className="project-case-palette" aria-label={`${project.name} colour palette`}>
+          <div className="project-case-palette" aria-label={interpolate(t.projects.palette, { name: project.name })}>
             {study.palette.map((colour) => <div key={colour} style={{ backgroundColor: colour }}>
               <span className="project-case-colour" style={{ color: Number.parseInt(colour.slice(1, 3), 16) * 0.299 + Number.parseInt(colour.slice(3, 5), 16) * 0.587 + Number.parseInt(colour.slice(5, 7), 16) * 0.114 > 150 ? "#1a1a1a" : "#f7f5f0" }}>{colour}</span>
             </div>)}
@@ -107,11 +111,11 @@ function ProjectCase({ project }: { project: Project }) {
         </figure>)}
 
         {showProjectArtwork && project.image && <figure className="project-case-artwork" data-project-image>
-          <div className="project-case-detail-image"><img src={project.image} alt={`Detail of the ${project.name} visual identity`} loading="lazy" /></div>
+          <div className="project-case-detail-image"><img src={project.image} alt={interpolate(t.projects.detail, { name: project.name })} loading="lazy" /></div>
         </figure>}
 
-        <nav className="project-case-gallery-nav" aria-label="More projects">
-          <a href="#projects" className="hover-wave"><ArrowLeft size={16} aria-hidden="true" /><HoverWaveText text="All projects" /></a>
+        <nav className="project-case-gallery-nav" aria-label={t.projects.more}>
+          <a href="#projects" className="hover-wave"><ArrowLeft size={16} aria-hidden="true" /><HoverWaveText text={t.projects.all} /></a>
           <a href={projectPath(next)} className="hover-wave"><HoverWaveText text={next.name} /><ArrowRight size={16} aria-hidden="true" /></a>
         </nav>
       </div>
