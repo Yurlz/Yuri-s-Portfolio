@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { ProjectWaveText } from "@/components/ui/project-wave-text";
-import { projects, type Project } from "@/data/projects";
+import { projects, localizeProject, type Project } from "@/data/projects";
 import { projectPath } from "@/data/project-case-studies";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/i18n/language-context";
+import { interpolate } from "@/i18n/translations";
 
 function ProjectPreview({ project, index }: { project: Project; index: number }) {
+  const { t } = useLanguage();
   if (project.image) {
     return (
       <img
         src={project.image}
-        alt={`Preview of ${project.name}`}
+        alt={interpolate(t.projects.preview, { name: project.name })}
         loading="lazy"
         className="aspect-[3/2] h-full w-full object-cover"
       />
@@ -37,6 +40,7 @@ function ProjectPreview({ project, index }: { project: Project; index: number })
 }
 
 export function ProjectsSection() {
+  const { t } = useLanguage();
   const [isDesktop, setIsDesktop] = useState(() => window.matchMedia("(min-width: 1024px) and (hover: hover)").matches);
   const [activeProject, setActiveProject] = useState<string | null>(() => isDesktop ? projects[0]?.id ?? null : null);
 
@@ -62,7 +66,7 @@ export function ProjectsSection() {
         id="projects-heading"
         className="mb-8 text-[clamp(2.5rem,6vw,6rem)] font-medium leading-[1.05] tracking-[-0.065em] text-black sm:mb-10"
       >
-        Selected Projects
+        {t.projects.heading}
       </h2>
 
       <div
@@ -81,13 +85,14 @@ export function ProjectsSection() {
           }
         }}
       >
-        {projects.map((project, index) => {
+        {projects.map((item, index) => {
+          const project = localizeProject(item, t);
           const isActive = !isDesktop || activeProject === project.id;
           const fields = [
-            { label: "Role", value: project.role },
-            { label: "Timeline", value: project.timeline },
-            { label: "Years", value: project.year },
-            { label: "Team", value: project.team },
+            { label: t.projects.role, value: project.role },
+            { label: t.projects.timeline, value: project.timeline },
+            { label: t.projects.years, value: project.year },
+            { label: t.projects.team, value: project.team },
           ];
 
           return (
@@ -122,7 +127,7 @@ export function ProjectsSection() {
                       isActive ? "border-black text-black" : "border-neutral-300 text-neutral-400",
                     )}
                   >
-                    <ProjectWaveText text="View project" />
+                    <ProjectWaveText text={t.projects.view} />
                     <ArrowRight className="h-4 w-4 stroke-[1.5] transition-transform duration-300" />
                   </span>
                 </a>
@@ -150,7 +155,7 @@ export function ProjectsSection() {
                   <div className="project-preview mt-6 w-full lg:absolute lg:right-0 lg:top-6 lg:mt-0 lg:w-[330px]">
                     <a
                       href={projectPath(project)}
-                      aria-label={`Open ${project.name} project`}
+                      aria-label={interpolate(t.projects.open, { name: project.name })}
                       tabIndex={isActive ? 0 : -1}
                       className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
                     >
