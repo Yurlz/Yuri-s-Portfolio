@@ -12,6 +12,7 @@ import {
 } from "framer-motion";
 import { SkillsetPreview, type SkillsetPreviewVariant } from "@/components/ui/skillset-preview";
 import { useSmoothScroll, useSmoothScrollProgress } from "@/components/smooth-scroll";
+import { useLanguage } from "@/i18n/language-context";
 
 interface Skill {
   title: string;
@@ -19,28 +20,11 @@ interface Skill {
   preview: SkillsetPreviewVariant;
 }
 
-const skills: Skill[] = [
-  {
-    title: "Web Design",
-    description:
-      "Thoughtful websites that bring brands to life, with clear structure and a seamless experience on every screen.",
-    preview: "web",
-  },
-  {
-    title: "UX | UI",
-    description:
-      "Intuitive interfaces built around real people, from user flows and prototypes to the final detail.",
-    preview: "interface",
-  },
-  {
-    title: "Graphic Design",
-    description:
-      "Distinctive identities and visual communication designed to make brands recognizable and memorable.",
-    preview: "graphic",
-  },
-];
+const skillVariants: SkillsetPreviewVariant[] = ["web", "interface", "graphic"];
 
 export function SkillsetSection() {
+  const { t } = useLanguage();
+  const skills: Skill[] = skillVariants.map((preview) => ({ ...t.skills[preview], preview }));
   const listRef = useRef<HTMLOListElement>(null);
   const { smoother } = useSmoothScroll();
   const hasTrackedPointer = useRef(false);
@@ -128,7 +112,7 @@ export function SkillsetSection() {
           id="skillset-heading"
           className="mb-8 text-[clamp(2.5rem,6vw,6rem)] font-medium leading-[1.05] tracking-[-0.065em] sm:mb-10"
         >
-          Skillset
+          {t.skills.heading}
         </h2>
 
         <ol
@@ -142,7 +126,7 @@ export function SkillsetSection() {
         >
           {skills.map((skill, index) => (
             <SkillRow
-              key={skill.title}
+              key={skill.preview}
               skill={skill}
               index={index}
               progress={revealProgress}
@@ -167,7 +151,7 @@ export function SkillsetSection() {
           >
             {skills.map((skill, index) => (
               <div
-                key={skill.title}
+                key={skill.preview}
                 data-preview={skill.preview}
                 data-visible={activeSkill === index}
                 className="skillset-preview absolute left-0 top-0 h-[220px] w-[320px] overflow-hidden border border-white/10 shadow-2xl shadow-black/30"
@@ -199,7 +183,7 @@ function SkillRow({
   onPointerEnter: (event: PointerEvent<HTMLLIElement>) => void;
 }) {
   const reveal = useTransform(progress, (value) => {
-    const localProgress = Math.max(0, Math.min(1, value * skills.length - index));
+    const localProgress = Math.max(0, Math.min(1, value * skillVariants.length - index));
     return 1 - Math.pow(1 - localProgress, 3);
   });
   const offset = useTransform(reveal, [0, 1], ["28%", "0%"]);
