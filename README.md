@@ -2,9 +2,9 @@
 
 The portfolio's closing sections follow the Yurlz Studio palette: cream, black, and blue (`#283EC9`). The contact section uses the supplied WebGL liquid-metal component, with a static gradient when WebGL is unavailable and reduced-motion support.
 
-The contact form opens an email draft addressed to `designer.yki@gmail.com`. The visitor sends it from their email app; the site does not claim to have delivered the message. A copy-message option is available after preparing a draft.
+The contact form opens an email draft addressed to `yurlzrdf@gmail.com`. The visitor sends it from their email app; the site does not claim to have delivered the message. A copy-message option is available after preparing a draft.
 
-To change the email or add social profiles, copy `.env.example` to `.env.local`, fill `VITE_CONTACT_EMAIL`, `VITE_INSTAGRAM_URL`, and `VITE_LINKEDIN_URL`, then restart Vite. Until social URLs are supplied, the footer links to Projects and About.
+The footer links to Instagram (`https://www.instagram.com/yuurlz/`) and LinkedIn (`https://www.linkedin.com/in/yurlz`) by default. To change the email or social profiles, copy `.env.example` to `.env.local`, update `VITE_CONTACT_EMAIL`, `VITE_INSTAGRAM_URL`, and `VITE_LINKEDIN_URL`, then restart Vite.
 
 Scrolling uses GSAP ScrollSmoother after the entrance finishes. Its settings live in `src/components/smooth-scroll.tsx`: `smooth: 1.05` on desktop and `smoothTouch: 0.12` on touch devices. Reduced motion uses native scrolling. Menu and policy dialogs pause smoothing, section links use ScrollSmoother navigation, and the About pin and Skillset reveals follow the smoothed position.
 
