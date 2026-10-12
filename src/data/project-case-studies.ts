@@ -1,4 +1,5 @@
 import { projects, type Project } from "@/data/projects";
+import type { Translations } from "@/i18n/translations";
 import redragonWebsite from "@/assets/tela-1.png";
 import redragonWebsiteDetails from "@/assets/tela-2.png";
 import redragonCampaigns from "@/assets/tela-3.png";
@@ -96,10 +97,18 @@ export function projectFromHash(hash: string) {
   }
 }
 
-export function getProjectCaseStudy(project: Project): ProjectCaseStudy {
-  return caseStudies[project.id] ?? {
-    description: `${project.name} — ${project.role ?? "Selected design work"}.`,
-    disciplines: project.role?.split(" · ") ?? ["Design"],
+export function getProjectCaseStudy(project: Project, t: Translations): ProjectCaseStudy {
+  const study = caseStudies[project.id] ?? {
+    description: `${project.name} — ${project.role ?? t.projects.selected}.`,
+    disciplines: project.role?.split(" · ") ?? [t.projects.design],
     palette: [project.coverBackground, project.coverForeground, "#283EC9"],
+  } satisfies ProjectCaseStudy;
+  const copy = t.projectContent[project.id as keyof Translations["projectContent"]];
+  if (!copy) return study;
+  return {
+    ...study,
+    description: copy.description,
+    disciplines: copy.disciplines,
+    gallery: study.gallery?.map((image, index) => ({ ...image, alt: copy.gallery[index] ?? image.alt })),
   };
 }
