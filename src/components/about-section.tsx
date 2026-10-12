@@ -4,9 +4,7 @@ import { LogoMarquee } from "@/components/ui/logo-marquee";
 import { TextGradientScroll } from "@/components/ui/text-gradient-scroll";
 import { useSmoothScroll } from "@/components/smooth-scroll";
 import { ScrollTrigger } from "@/lib/gsap";
-
-const introduction =
-  "Hi, I’m Yuri, a graphic and web designer. I work on identities, design systems, and the interfaces where they come to life. I create designs that people remember and products that require no thought to use.";
+import { useLanguage } from "@/i18n/language-context";
 
 const designTools = [
   { name: "Figma", icon: "figma" },
@@ -27,6 +25,7 @@ const developmentTools = [
 ];
 
 export function AboutSection() {
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const { smoother } = useSmoothScroll();
@@ -57,14 +56,14 @@ export function AboutSection() {
     <section
       ref={sectionRef}
       id="about"
-      aria-label="About Yuri"
+      aria-label={t.about.label}
       data-smooth={Boolean(smoother)}
       className="about-scroll-section relative h-[260svh]"
     >
       <div ref={panelRef} className="about-sticky-panel sticky top-0 flex h-[100svh] items-center">
         <div className="about-content mx-auto w-full max-w-[1440px] px-6 py-8 sm:px-10 sm:py-12 lg:px-12 lg:py-16">
           <TextGradientScroll
-            text={introduction}
+            text={t.about.introduction}
             type="letter"
             textOpacity="medium"
             scrollProgress={textProgress}
@@ -74,14 +73,14 @@ export function AboutSection() {
 
           <div className="about-tools mt-8 border-t border-neutral-300 pt-6 sm:mt-16 sm:pt-10">
             <p className="mb-5 text-center text-[10px] font-normal uppercase tracking-[0.08em] text-neutral-500 sm:mb-6 sm:text-xs">
-              (Tools &amp; technologies)
+              {t.about.tools}
             </p>
             <div className="about-logo-rows flex flex-col gap-5 sm:gap-8">
-              <LogoMarquee logos={designTools} direction="right" label="Design tools" />
+              <LogoMarquee logos={designTools} direction="right" label={t.about.designTools} />
               <LogoMarquee
                 logos={developmentTools}
                 direction="left"
-                label="Development tools"
+                label={t.about.developmentTools}
               />
             </div>
           </div>
