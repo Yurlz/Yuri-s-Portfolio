@@ -4,14 +4,16 @@ import { X } from "lucide-react";
 import { HoverWaveText } from "@/components/ui/hover-wave-text";
 import { contactEmail, socialLinks } from "@/data/contact";
 import { useSmoothScrollLock } from "@/components/smooth-scroll";
+import { useLanguage } from "@/i18n/language-context";
 
 export type StudioPolicy = "privacy" | "terms";
 
 export function StudioFooter({ onPolicyClick }: { onPolicyClick: (policy: StudioPolicy) => void }) {
+  const { t } = useLanguage();
   const reducedMotion = useReducedMotion() ?? false;
   const links = socialLinks.length ? socialLinks : [
-    { label: "PROJECTS", href: "#projects" },
-    { label: "ABOUT", href: "#about" },
+    { label: t.footer.projects, href: "#projects" },
+    { label: t.footer.about, href: "#about" },
   ];
 
   return (
@@ -20,7 +22,7 @@ export function StudioFooter({ onPolicyClick }: { onPolicyClick: (policy: Studio
         <motion.a
           href="#home"
           className="footer-wordmark"
-          aria-label="Yurlz Studio — back to top"
+          aria-label={t.footer.backToTop}
           initial={reducedMotion ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -34,8 +36,8 @@ export function StudioFooter({ onPolicyClick }: { onPolicyClick: (policy: Studio
         </motion.a>
 
         <div className="footer-content">
-          <p className="footer-tagline">SOMEWHERE BETWEEN<br />STRUCTURE AND INSTINCT.</p>
-          <nav className="footer-links" aria-label="Footer">
+          <p className="footer-tagline">{t.footer.taglineStart}<br />{t.footer.taglineEnd}</p>
+          <nav className="footer-links" aria-label={t.footer.label}>
             <a className="hover-wave" href={`mailto:${contactEmail}`}>
               <HoverWaveText text={contactEmail.toUpperCase()} />
             </a>
@@ -51,20 +53,21 @@ export function StudioFooter({ onPolicyClick }: { onPolicyClick: (policy: Studio
               </a>
             ))}
             <button className="hover-wave" type="button" onClick={() => onPolicyClick("privacy")}>
-              <HoverWaveText text="PRIVACY" />
+              <HoverWaveText text={t.footer.privacy} />
             </button>
             <button className="hover-wave" type="button" onClick={() => onPolicyClick("terms")}>
-              <HoverWaveText text="TERMS" />
+              <HoverWaveText text={t.footer.terms} />
             </button>
           </nav>
         </div>
-        <p className="footer-copyright">© {new Date().getFullYear()} Yurlz Studio. All rights reserved.</p>
+        <p className="footer-copyright">© {new Date().getFullYear()} Yurlz Studio. {t.footer.copyright}</p>
       </div>
     </footer>
   );
 }
 
 export function StudioPolicyDialog({ policy, onClose }: { policy: StudioPolicy | null; onClose: () => void }) {
+  const { t } = useLanguage();
   const dialogRef = useRef<HTMLDialogElement>(null);
   useSmoothScrollLock(Boolean(policy));
 
@@ -92,20 +95,21 @@ export function StudioPolicyDialog({ policy, onClose }: { policy: StudioPolicy |
         if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) onClose();
       }}
     >
-      <button type="button" className="studio-policy-close" onClick={onClose} aria-label="Close">
+      <button type="button" className="studio-policy-close" onClick={onClose} aria-label={t.policy.close}>
         <X aria-hidden="true" size={22} />
       </button>
       <p className="contact-eyebrow">YURLZ.STUDIO®</p>
-      <h2 id="studio-policy-heading">{policy === "terms" ? "Terms of use" : "Privacy"}</h2>
+      <h2 id="studio-policy-heading">{policy === "terms" ? t.policy.termsTitle : t.policy.privacyTitle}</h2>
       {policy === "terms" ? (
         <>
-          <p>This portfolio presents design work by Yuri Rocha / Yurlz Studio. The work is shown for reference and remains the property of its respective owners.</p>
-          <p>Sending an inquiry starts a conversation. Project scope, timelines, pricing, and usage rights are agreed separately before work begins.</p>
+          <p>{t.policy.termsIntroduction}</p>
+          <p>{t.policy.termsDetails}</p>
         </>
       ) : (
         <>
-          <p>The contact form prepares a message in your own email app. This website does not submit or store the details you enter in the form.</p>
-          <p>If you send that email, your name, email address, and any details you include are used to reply to your inquiry. For questions about your message, write to <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.</p>
+          <p>{t.policy.privacyIntroduction}</p>
+          <p>{t.policy.privacyDetails} <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.</p>
+          <p>{t.policy.languagePreference}</p>
         </>
       )}
     </dialog>
