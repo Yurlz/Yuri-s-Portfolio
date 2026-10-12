@@ -23,6 +23,47 @@
   align-items: center;
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2.5vw, 28px);
+}
+
+.language {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.languageSelect {
+  min-height: 44px;
+  padding: 8px 24px 8px 10px;
+  border: 1px solid #d4d1cb;
+  border-radius: 0;
+  appearance: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 200ms;
+}
+
+.languageSelect:hover {
+  border-color: currentColor;
+}
+
+.languageSelect option {
+  background: #f7f5f0;
+  color: #1a1a1a;
+}
+
+.language svg {
+  position: absolute;
+  right: 8px;
+  pointer-events: none;
+}
+
 .trigger {
   display: flex;
   width: 56px;
@@ -52,6 +93,7 @@
 }
 
 .brand:focus-visible,
+.languageSelect:focus-visible,
 .trigger:focus-visible,
 .panel a:focus-visible {
   outline: 2px solid #283ec9;
