@@ -1,22 +1,26 @@
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
 import { createPortal } from "react-dom";
+import { ChevronDown } from "lucide-react";
 import { HoverWaveText } from "@/components/ui/hover-wave-text";
 import { useSmoothScrollLock } from "@/components/smooth-scroll";
 import { contactEmail } from "@/data/contact";
+import { useLanguage } from "@/i18n/language-context";
+import { languageOptions, type Language } from "@/i18n/translations";
 import styles from "./site-header.module.css";
 
-const menuLinks = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Work", href: "#projects" },
-  { label: "Skillset", href: "#skillset" },
-  { label: "Contact", href: "#contact" },
-];
-
 export function SiteHeader({ contentRef, fixed = false }: { contentRef: RefObject<HTMLDivElement>; fixed?: boolean }) {
+  const { language, setLanguage, t } = useLanguage();
+  const menuLinks = [
+    { label: t.navigation.home, href: "#home" },
+    { label: t.navigation.about, href: "#about" },
+    { label: t.navigation.work, href: "#projects" },
+    { label: t.navigation.skillset, href: "#skillset" },
+    { label: t.navigation.contact, href: "#contact" },
+  ];
   const [open, setOpen] = useState(false);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const languageRef = useRef<HTMLSelectElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
@@ -65,6 +69,7 @@ export function SiteHeader({ contentRef, fixed = false }: { contentRef: RefObjec
       } else if (event.key === "Tab") {
         const controls = [
           ...Array.from(panel!.querySelectorAll<HTMLElement>("a[href], button")),
+          languageRef.current,
           triggerRef.current,
         ].filter((element): element is HTMLElement => element !== null);
         const index = controls.indexOf(document.activeElement as HTMLElement);
@@ -99,18 +104,34 @@ export function SiteHeader({ contentRef, fixed = false }: { contentRef: RefObjec
         <a href="#home" onClick={() => setOpen(false)} className={`${styles.brand} text-sm font-semibold uppercase tracking-widest`}>
           YURLZ®
         </a>
-        <button
-          ref={triggerRef}
-          type="button"
-          aria-label={open ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={open}
-          aria-controls="site-menu"
-          onClick={() => setOpen((value) => !value)}
-          className={styles.trigger}
-        >
-          <span aria-hidden="true" />
-          <span aria-hidden="true" />
-        </button>
+        <div className={styles.actions}>
+          <div className={styles.language}>
+            <select
+              ref={languageRef}
+              aria-label={t.navigation.language}
+              value={language}
+              onChange={(event) => setLanguage(event.currentTarget.value as Language)}
+              className={styles.languageSelect}
+            >
+              {languageOptions.map((option) => (
+                <option key={option.value} value={option.value} lang={option.locale}>{option.label}</option>
+              ))}
+            </select>
+            <ChevronDown aria-hidden="true" size={14} strokeWidth={1.5} />
+          </div>
+          <button
+            ref={triggerRef}
+            type="button"
+            aria-label={open ? t.navigation.closeMenu : t.navigation.openMenu}
+            aria-expanded={open}
+            aria-controls="site-menu"
+            onClick={() => setOpen((value) => !value)}
+            className={styles.trigger}
+          >
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+          </button>
+        </div>
       </header>
   );
 
@@ -124,7 +145,7 @@ export function SiteHeader({ contentRef, fixed = false }: { contentRef: RefObjec
         <nav
           id="site-menu"
           ref={panelRef}
-          aria-label="Menu principal"
+          aria-label={t.navigation.mainMenu}
           aria-hidden={!open}
           tabIndex={-1}
           data-menu={open ? "open" : "closed"}
