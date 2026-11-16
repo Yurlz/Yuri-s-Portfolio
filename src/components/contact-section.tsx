@@ -1,45 +1,44 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { ArrowRight, ChevronDown, Copy } from "lucide-react";
+import { ArrowRight, ChevronDown, LoaderCircle } from "lucide-react";
 import { LiquidMetalShader } from "@/components/ui/liquid-metal-shader";
 import { HoverWaveText } from "@/components/ui/hover-wave-text";
 import { contactEmail } from "@/data/contact";
 import { useLanguage } from "@/i18n/language-context";
-import { interpolate, type Translations } from "@/i18n/translations";
 
 type ContactSectionProps = { onPrivacyClick: () => void };
-type DraftDetails = { name: string; email: string; phone: string; reason: "project" | "hello"; message: string };
-
-function formatDraft(details: DraftDetails, copy: Translations["contact"]) {
-  return [
-    `${copy.draftName}: ${details.name}`,
-    `${copy.draftEmail}: ${details.email}`,
-    ...(details.phone ? [`${copy.draftPhone}: ${details.phone}`] : []),
-    `${copy.draftReason}: ${details.reason === "hello" ? copy.helloReason : copy.projectReason}`,
-    "",
-    details.message,
-  ].join("\n");
-}
+type SendStatus = "sending" | "sent" | "error" | "activationRequired" | null;
 
 export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
   const { t } = useLanguage();
   const copy = t.contact;
   const formRef = useRef<HTMLFormElement>(null);
+  const sendingRef = useRef(false);
+  const requestRef = useRef<AbortController | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const inView = useInView(cardRef, { amount: 0.2 });
   const reducedMotion = useReducedMotion() ?? false;
-  const [details, setDetails] = useState<DraftDetails | null>(null);
-  const [status, setStatus] = useState<"ready" | "copied" | "copyFallback" | null>(null);
-  const draft = details ? formatDraft(details, copy) : "";
+  const [status, setStatus] = useState<SendStatus>(null);
+  const sending = status === "sending";
+
+  useEffect(() => () => requestRef.current?.abort(), []);
 
   useEffect(() => {
     formRef.current?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea")
       .forEach((field) => field.setCustomValidity(""));
   }, [copy]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    if (sendingRef.current) return;
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    setStatus(null);
+
+    // Bots that fill this hidden field should never trigger an email.
+    if (formData.get("_honey")) return;
+
     const name = String(formData.get("name") || "").trim();
     const email = String(formData.get("email") || "").trim();
     const phone = String(formData.get("phone") || "").trim();
@@ -50,7 +49,7 @@ export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
       ["email", email, copy.emailRequired],
       ["message", message, copy.messageRequired],
     ]) {
-      const field = event.currentTarget.elements.namedItem(fieldName);
+      const field = form.elements.namedItem(fieldName);
       if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) {
         field.setCustomValidity("");
         if (!value || field.validity.typeMismatch) {
@@ -60,21 +59,51 @@ export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
         }
       }
     }
-    const nextDetails: DraftDetails = { name, email, phone, reason, message };
-    const body = formatDraft(nextDetails, copy);
     const subjectReason = reason === "hello" ? copy.helloReason : copy.projectReason;
+    const controller = new AbortController();
+    requestRef.current = controller;
+    sendingRef.current = true;
+    setStatus("sending");
+    const timeout = window.setTimeout(() => controller.abort(), 30000);
 
-    setDetails(nextDetails);
-    setStatus("ready");
-    window.location.href = `mailto:${contactEmail}?subject=${encodeURIComponent(`${subjectReason} — ${name}`)}&body=${encodeURIComponent(body)}`;
-  }
-
-  async function copyDraft() {
     try {
-      await navigator.clipboard.writeText(draft);
-      setStatus("copied");
+      const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(contactEmail)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          reason: subjectReason,
+          message,
+          _subject: `Portfolio — ${subjectReason} — ${name}`,
+          _replyto: email,
+          _template: "table",
+          _captcha: "false",
+          _honey: "",
+          _url: window.location.href,
+        }),
+      });
+      const result: { success?: boolean | string; message?: string } = await response.json();
+
+      // The service can return HTTP 200 with success set to the string "false".
+      if (!response.ok || (result.success !== true && result.success !== "true")) {
+        if (typeof result.message === "string" && /activat/i.test(result.message)) {
+          setStatus("activationRequired");
+          return;
+        }
+        throw new Error("Contact form submission failed");
+      }
+
+      form.reset();
+      setStatus("sent");
     } catch {
-      setStatus("copyFallback");
+      setStatus("error");
+    } finally {
+      window.clearTimeout(timeout);
+      requestRef.current = null;
+      sendingRef.current = false;
     }
   }
 
@@ -112,8 +141,13 @@ export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
             </a>
           </p>
 
-          <form ref={formRef} onSubmit={handleSubmit} noValidate>
-            <div className="contact-fields">
+          <form ref={formRef} onSubmit={handleSubmit} aria-busy={sending} noValidate>
+            <div className="contact-honeypot" aria-hidden="true">
+              <label htmlFor="contact-website">Website</label>
+              <input id="contact-website" name="_honey" autoComplete="off" tabIndex={-1} />
+            </div>
+            <fieldset className="contact-fields" disabled={sending}>
+              <legend className="sr-only">{copy.heading}</legend>
               <div className="contact-field">
                 <label htmlFor="contact-name">{copy.name}</label>
                 <input id="contact-name" name="name" autoComplete="name" placeholder={copy.namePlaceholder} maxLength={120} onInput={(event) => event.currentTarget.setCustomValidity("")} required />
@@ -138,33 +172,24 @@ export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
                 <label htmlFor="contact-message">{copy.message}</label>
                 <textarea id="contact-message" name="message" placeholder={copy.messagePlaceholder} rows={1} maxLength={2000} onInput={(event) => event.currentTarget.setCustomValidity("")} required />
               </div>
-            </div>
+            </fieldset>
 
             <div className="contact-submit-row">
-              <button type="submit" className="contact-submit hover-wave" aria-describedby="contact-send-note">
-                <HoverWaveText text={copy.send} />
-                <ArrowRight aria-hidden="true" size={17} strokeWidth={1.5} />
+              <button type="submit" className="contact-submit hover-wave" aria-describedby="contact-send-note" disabled={sending}>
+                <HoverWaveText text={sending ? copy.sending : copy.send} />
+                {sending
+                  ? <LoaderCircle aria-hidden="true" className="animate-spin" size={17} strokeWidth={1.5} />
+                  : <ArrowRight aria-hidden="true" size={17} strokeWidth={1.5} />}
               </button>
               <p id="contact-send-note">{copy.sendNote}</p>
+            </div>
+            <div role="status" aria-live="polite" aria-atomic="true" className="contact-status" data-status={status}>
+              {status && copy[status]}
             </div>
             <p className="contact-privacy">
               {copy.privacyNote}{" "}
               <button type="button" onClick={onPrivacyClick}>{copy.privacyLink}</button>
             </p>
-
-            <div role="status" aria-live="polite" className="contact-status">{status && interpolate(copy[status], { email: contactEmail })}</div>
-            {draft && (
-              <div className="contact-draft">
-                <button type="button" onClick={copyDraft} className="hover-wave">
-                  <HoverWaveText text={copy.copy} />
-                  <Copy aria-hidden="true" size={14} />
-                </button>
-                <details>
-                  <summary>{copy.viewMessage}</summary>
-                  <pre>{draft}</pre>
-                </details>
-              </div>
-            )}
           </form>
         </motion.div>
       </div>

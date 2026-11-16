@@ -2,7 +2,9 @@
 
 The portfolio's closing sections follow the Yurlz Studio palette: cream, black, and blue (`#283EC9`). The contact section uses the supplied WebGL liquid-metal component, with a static gradient when WebGL is unavailable and reduced-motion support.
 
-The contact form opens an email draft addressed to `yurlzrdf@gmail.com`. The visitor sends it from their email app; the site does not claim to have delivered the message. A copy-message option is available after preparing a draft.
+The contact form sends messages directly to `yurlzrdf@gmail.com` using [FormSubmit's AJAX endpoint](https://formsubmit.co/ajax-documentation), without leaving the page or opening an email app. It includes the visitor's name, email, optional phone number, reason, and message, with Reply-To set to the visitor's email. The button shows a sending state and prevents duplicate submissions. A success message appears only when FormSubmit confirms acceptance; failures preserve the entered details for another attempt. Requests time out after 30 seconds, and a hidden honeypot field helps filter bots.
+
+Before receiving messages, submit the form once from the website and click **Activate Form** in the confirmation email FormSubmit sends to `yurlzrdf@gmail.com` (check spam too). Activation is required once for each form/address. Until activated, the form reports that activation is pending instead of claiming success. Test again after activation to confirm delivery. See [FormSubmit's activation FAQ](https://formsubmit.co/help). No API key or mail password is needed. The visitor's details are processed by FormSubmit, as described in the site's privacy text.
 
 The footer links to Instagram (`https://www.instagram.com/yuurlz/`) and LinkedIn (`https://www.linkedin.com/in/yurlz`) by default. To change the email or social profiles, copy `.env.example` to `.env.local`, update `VITE_CONTACT_EMAIL`, `VITE_INSTAGRAM_URL`, and `VITE_LINKEDIN_URL`, then restart Vite.
 

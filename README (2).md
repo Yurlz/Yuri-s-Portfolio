@@ -2,7 +2,7 @@
 
 The portfolio's closing sections follow the Yurlz Studio palette: cream, black, and blue (`#283EC9`). The contact section uses the supplied WebGL liquid-metal component, with a static gradient when WebGL is unavailable and reduced-motion support.
 
-The contact form opens an email draft addressed to `yurlzrdf@gmail.com`. The visitor sends it from their email app; the site does not claim to have delivered the message. A copy-message option is available after preparing a draft.
+The contact form sends messages directly to `yurlzrdf@gmail.com` through FormSubmit without opening an email app. Submit the form once, then click **Activate Form** in the confirmation email sent to that address (check spam too). Until activation, the form displays a pending-activation notice. See `README.md` for setup and delivery details.
 
 The footer links to Instagram (`https://www.instagram.com/yuurlz/`) and LinkedIn (`https://www.linkedin.com/in/yurlz`) by default. To change the email or social profiles, copy `.env.example` to `.env.local`, update `VITE_CONTACT_EMAIL`, `VITE_INSTAGRAM_URL`, and `VITE_LINKEDIN_URL`, then restart Vite.
 

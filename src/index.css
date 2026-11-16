@@ -366,6 +366,13 @@ html[data-smooth-cursor="true"] body * {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 34px 35px;
   margin-top: 36px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.contact-honeypot {
+  display: none;
 }
 
 .contact-field {
@@ -460,7 +467,7 @@ html[data-smooth-cursor="true"] body * {
   transition: background-color 300ms ease, color 300ms ease;
 }
 
-.contact-submit:hover {
+.contact-submit:hover:not(:disabled) {
   background: transparent;
   color: #f7f5f0;
 }
@@ -469,8 +476,13 @@ html[data-smooth-cursor="true"] body * {
   transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.contact-submit:hover svg {
+.contact-submit:hover:not(:disabled) svg {
   transform: rotate(-45deg);
+}
+
+.contact-submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .contact-submit-row p,
@@ -507,39 +519,13 @@ html[data-smooth-cursor="true"] body * {
   color: #d6d3ce;
 }
 
-.contact-draft {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 12px 24px;
-  margin-top: 12px;
-  font-size: 12px;
+.contact-status[data-status="sent"] {
+  color: #a9dfbf;
 }
 
-.contact-draft > button {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  gap: 10px;
-}
-
-.contact-draft details {
-  flex: 1 1 100%;
-}
-
-.contact-draft summary {
-  width: fit-content;
-  cursor: pointer;
-}
-
-.contact-draft pre {
-  margin-top: 12px;
-  padding: 16px;
-  border: 1px solid #504e49;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  font: inherit;
-  line-height: 1.7;
+.contact-status[data-status="error"],
+.contact-status[data-status="activationRequired"] {
+  color: #ffc0b5;
 }
 
 .studio-footer {
@@ -956,7 +942,7 @@ html[data-smooth-cursor="true"] body * {
     transition: none;
   }
 
-  .contact-submit:hover svg {
+  .contact-submit:hover:not(:disabled) svg {
     transform: none;
   }
 
