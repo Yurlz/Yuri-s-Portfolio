@@ -33,7 +33,7 @@ const garments: Garment[] = [
 
 const SPACING = 11; // distance between hangers, in cqw
 const HOVER_SHIFT = 9.5; // how far neighbours slide away from the hovered piece
-const SIDE_ANGLE = -66; // resting rotation of a piece on the rack
+const SIDE_ANGLE = -42; // resting rotation on the rack (the front mockups are already angled)
 
 function Shirt({ garment, side }: { garment: Garment; side: "front" | "back" }) {
   const print = side === "front" ? garment.front : garment.back;
