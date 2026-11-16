@@ -524,7 +524,9 @@ html[data-smooth-cursor="true"] body * {
 }
 
 .contact-status[data-status="error"],
-.contact-status[data-status="activationRequired"] {
+.contact-status[data-status="activationRequired"],
+.contact-status[data-status="connectionError"],
+.contact-status[data-status="timeout"] {
   color: #ffc0b5;
 }
 

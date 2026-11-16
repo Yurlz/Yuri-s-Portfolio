@@ -7,7 +7,7 @@ import { contactEmail } from "@/data/contact";
 import { useLanguage } from "@/i18n/language-context";
 
 type ContactSectionProps = { onPrivacyClick: () => void };
-type SendStatus = "sending" | "sent" | "error" | "activationRequired" | null;
+type SendStatus = "sending" | "sent" | "error" | "activationRequired" | "connectionError" | "timeout" | null;
 
 export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
   const { t } = useLanguage();
@@ -64,26 +64,31 @@ export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
     requestRef.current = controller;
     sendingRef.current = true;
     setStatus("sending");
-    const timeout = window.setTimeout(() => controller.abort(), 30000);
+    const timeout = window.setTimeout(() => controller.abort(), 120000);
 
     try {
-      const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(contactEmail)}`, {
+      // Keep the address in the provider's documented URL format. Encoding @ as
+      // %40 can be blocked before the request reaches its CORS-enabled endpoint.
+      const recipient = encodeURIComponent(contactEmail).replace(/%40/gi, "@");
+      const body = new URLSearchParams({
+        name,
+        email,
+        phone,
+        reason: subjectReason,
+        message,
+        _subject: `Portfolio — ${subjectReason} — ${name}`,
+        _replyto: email,
+        _template: "table",
+        _captcha: "false",
+        _honey: "",
+        _url: window.location.href,
+      });
+      // Native form encoding avoids the JSON request's CORS preflight.
+      const response = await fetch(`https://formsubmit.co/ajax/${recipient}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: { Accept: "application/json" },
         signal: controller.signal,
-        body: JSON.stringify({
-          name,
-          email,
-          phone,
-          reason: subjectReason,
-          message,
-          _subject: `Portfolio — ${subjectReason} — ${name}`,
-          _replyto: email,
-          _template: "table",
-          _captcha: "false",
-          _honey: "",
-          _url: window.location.href,
-        }),
+        body,
       });
       const result: { success?: boolean | string; message?: string } = await response.json();
 
@@ -98,8 +103,8 @@ export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
 
       form.reset();
       setStatus("sent");
-    } catch {
-      setStatus("error");
+    } catch (error) {
+      setStatus(controller.signal.aborted ? "timeout" : error instanceof TypeError ? "connectionError" : "error");
     } finally {
       window.clearTimeout(timeout);
       requestRef.current = null;
@@ -184,7 +189,7 @@ export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
               <p id="contact-send-note">{copy.sendNote}</p>
             </div>
             <div role="status" aria-live="polite" aria-atomic="true" className="contact-status" data-status={status}>
-              {status && copy[status]}
+              {status === "sending" ? copy.sendingNote : status && copy[status]}
             </div>
             <p className="contact-privacy">
               {copy.privacyNote}{" "}
