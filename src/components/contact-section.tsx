@@ -64,7 +64,7 @@ export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
     requestRef.current = controller;
     sendingRef.current = true;
     setStatus("sending");
-    const timeout = window.setTimeout(() => controller.abort(), 120000);
+    const timeout = window.setTimeout(() => controller.abort(), 30000);
 
     try {
       // Keep the address in the provider's documented URL format. Encoding @ as
@@ -189,7 +189,7 @@ export function ContactSection({ onPrivacyClick }: ContactSectionProps) {
               <p id="contact-send-note">{copy.sendNote}</p>
             </div>
             <div role="status" aria-live="polite" aria-atomic="true" className="contact-status" data-status={status}>
-              {status === "sending" ? copy.sendingNote : status && copy[status]}
+              {status && copy[status]}
             </div>
             <p className="contact-privacy">
               {copy.privacyNote}{" "}
