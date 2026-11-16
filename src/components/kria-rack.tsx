@@ -112,6 +112,7 @@ export function KriaRack() {
               className="kria-rack-item"
               style={style}
               data-selected={isSelected}
+              data-sway={open || hovered === null ? undefined : hovered === index ? "main" : "side"}
               data-hidden={open && !isSelected}
               tabIndex={open && !isSelected ? -1 : 0}
               aria-label={isSelected ? `${garment.name} — ${side === "front" ? copy.back : copy.front}` : interpolate(copy.view, { name: garment.name })}
