@@ -2,8 +2,8 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import blackBack from "@/assets/kria-rack/black-back.webp";
 import blackFront from "@/assets/kria-rack/black-front.webp";
-import offwhiteBack from "@/assets/kria-rack/offwhite-back.webp";
-import offwhiteFront from "@/assets/kria-rack/offwhite-front.webp";
+import whiteBack from "@/assets/kria-rack/white-back.webp";
+import whiteFront from "@/assets/kria-rack/white-front.webp";
 import { useLanguage } from "@/i18n/language-context";
 import { interpolate } from "@/i18n/translations";
 import "./kria-rack.css";
@@ -24,12 +24,11 @@ type Garment = {
 };
 
 const garments: Garment[] = [
-  { id: "black", name: "Dragon Soul Tee — Black", frontImage: blackFront, backImage: blackBack },
-  { id: "offwhite", name: "Dragon Soul Tee — Off-white", frontImage: offwhiteFront, backImage: offwhiteBack },
-  { id: "crest", name: "Dragon Crest Tee — Black", frontImage: blackFront, backImage: blackBack },
+  { id: "npc", name: "Don't Be an NPC Tee — White", frontImage: whiteFront, backImage: whiteBack },
+  { id: "dragon-soul", name: "Dragon Soul Tee — Black", frontImage: blackFront, backImage: blackBack },
 ];
 
-const SPACING = 11; // distance between hangers, in cqw
+const SPACING = 13; // distance between hangers, in cqw
 const HOVER_SHIFT = 9.5; // how far neighbours slide away from the hovered piece
 const SIDE_ANGLE = -66; // resting rotation of a piece on the rack
 
