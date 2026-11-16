@@ -19,6 +19,7 @@ const en = {
     disciplines: "Project disciplines", more: "More projects", visit: "Visit project",
     preview: "Preview of {name}", open: "Open {name} project", gallery: "{name} project gallery",
     artwork: "{name} — project artwork", palette: "{name} colour palette", detail: "Detail of the {name} visual identity",
+    rack: { label: "Kria collection rack", hint: "Pick a piece to see it up close", view: "View {name}", front: "Front", back: "Back", side: "Shirt side", close: "Close", previous: "Previous piece", next: "Next piece" },
   },
   skills: {
     heading: "Skillset",
@@ -116,6 +117,7 @@ const pt: Translations = {
     disciplines: "Áreas do projeto", more: "Mais projetos", visit: "Visitar projeto",
     preview: "Prévia de {name}", open: "Abrir projeto {name}", gallery: "Galeria do projeto {name}",
     artwork: "{name} — arte do projeto", palette: "Paleta de cores de {name}", detail: "Detalhe da identidade visual de {name}",
+    rack: { label: "Arara da coleção Kria", hint: "Escolha uma peça para ver de perto", view: "Ver {name}", front: "Frente", back: "Verso", side: "Lado da camiseta", close: "Fechar", previous: "Peça anterior", next: "Próxima peça" },
   },
   skills: {
     heading: "Habilidades",
@@ -209,6 +211,7 @@ const es: Translations = {
     disciplines: "Áreas del proyecto", more: "Más proyectos", visit: "Visitar proyecto",
     preview: "Vista previa de {name}", open: "Abrir proyecto {name}", gallery: "Galería del proyecto {name}",
     artwork: "{name} — arte del proyecto", palette: "Paleta de colores de {name}", detail: "Detalle de la identidad visual de {name}",
+    rack: { label: "Perchero de la colección Kria", hint: "Elige una prenda para verla de cerca", view: "Ver {name}", front: "Frente", back: "Espalda", side: "Lado de la camiseta", close: "Cerrar", previous: "Prenda anterior", next: "Prenda siguiente" },
   },
   skills: {
     heading: "Habilidades",

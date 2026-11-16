@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SmoothScroll, useSmoothScroll } from "@/components/smooth-scroll";
 import { StudioFooter, StudioPolicyDialog, type StudioPolicy } from "@/components/studio-footer";
+import { KriaRack } from "@/components/kria-rack";
 import { HoverWaveText } from "@/components/ui/hover-wave-text";
 import { getProjectCaseStudy, projectPath } from "@/data/project-case-studies";
 import { projects, localizeProject, type Project } from "@/data/projects";
@@ -94,6 +95,8 @@ function ProjectCase({ project: originalProject }: { project: Project }) {
       </div>
 
       <div className="project-case-gallery" aria-label={interpolate(t.projects.gallery, { name: project.name })}>
+        {project.id === "kria" && <figure className="project-case-artwork" data-project-image><KriaRack /></figure>}
+
         {showProjectArtwork && project.image && <figure className="project-case-artwork" data-project-image>
           <img src={project.image} alt={interpolate(t.projects.artwork, { name: project.name })} loading="eager" decoding="async" onLoad={() => ScrollTrigger.refresh()} />
         </figure>}

@@ -1,0 +1,221 @@
+.kria-rack {
+  container-type: inline-size;
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  background: radial-gradient(120% 90% at 50% 30%, #f1efea 0%, #e3e1db 70%, #d9d7d0 100%);
+  color: #1a1a1a;
+}
+
+/* Every measure inside the stage is in cqw, so the scene scales as one piece. */
+.kria-rack-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.kria-rack-bar {
+  position: absolute;
+  top: 9cqw;
+  left: 13cqw;
+  right: 13cqw;
+  height: 0.8cqw;
+  border-radius: 1cqw;
+  background: linear-gradient(#f4f4f2, #a9a9a5 55%, #7d7d79);
+  box-shadow: 0 1.4cqw 1.6cqw rgba(0, 0, 0, 0.12);
+  transition: opacity 500ms ease;
+}
+
+.kria-rack-bar::before,
+.kria-rack-bar::after {
+  content: "";
+  position: absolute;
+  top: -0.5cqw;
+  width: 0.6cqw;
+  height: 1.8cqw;
+  border-radius: 0.3cqw;
+  background: #8d8d89;
+}
+.kria-rack-bar::before { left: 0; }
+.kria-rack-bar::after { right: 0; }
+
+.kria-rack-item {
+  position: absolute;
+  top: 8cqw;
+  left: 50%;
+  width: 26cqw;
+  aspect-ratio: 400 / 518;
+  margin-left: -13cqw;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  /* Only the rotated shirt is clickable, not the full-width box behind it. */
+  pointer-events: none;
+  transform: translateX(calc(var(--x) * 1cqw));
+  transform-origin: 50% 0;
+  filter: drop-shadow(1.2cqw 1.6cqw 1.4cqw rgba(0, 0, 0, 0.2));
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 450ms ease, filter 700ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.kria-rack-item[data-selected="true"] {
+  transform: translate(calc(var(--x) * 1cqw), -4.5cqw) scale(1.3);
+  filter: drop-shadow(2cqw 2.4cqw 2.2cqw rgba(0, 0, 0, 0.16));
+}
+
+.kria-rack-item[data-hidden="true"] { opacity: 0; }
+.kria-rack-item[data-hidden="true"] .kria-rack-swing { pointer-events: none; }
+
+.kria-rack-item:focus-visible { outline: none; }
+.kria-rack-item:focus-visible .kria-rack-swing { outline: 2px solid #283ec9; outline-offset: 4px; }
+
+.kria-rack-swing {
+  position: absolute;
+  inset: 0;
+  transform: perspective(120cqw) rotateY(var(--angle));
+  transform-style: preserve-3d;
+  pointer-events: auto;
+  transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kria-rack-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.kria-rack-face[data-side="back"] { transform: rotateY(180deg); }
+.kria-rack-face > svg,
+.kria-rack-mockup { display: block; width: 100%; height: 100%; }
+.kria-rack-mockup { object-fit: contain; }
+.kria-rack-print { position: absolute; height: auto; pointer-events: none; }
+
+.kria-rack-caption {
+  position: absolute;
+  top: 50cqw;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: clamp(10px, 1.7cqw, 13px);
+  color: #74716c;
+  transition: opacity 300ms ease;
+}
+
+.kria-rack-detail {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 350ms ease;
+}
+
+.kria-rack[data-open="true"] .kria-rack-detail { opacity: 1; transition-delay: 250ms; }
+.kria-rack[data-open="true"] .kria-rack-detail button { pointer-events: auto; }
+.kria-rack[data-open="true"] .kria-rack-bar,
+.kria-rack[data-open="true"] .kria-rack-caption { opacity: 0; }
+
+.kria-rack-detail button {
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.kria-rack-close {
+  position: absolute;
+  top: 2cqw;
+  right: 2.5cqw;
+  z-index: 20;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  font-size: 10px !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kria-rack-arrow {
+  position: absolute;
+  top: 27cqw;
+  z-index: 20;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+}
+.kria-rack-arrow::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.55;
+  transition: opacity 250ms, background-color 250ms;
+}
+.kria-rack-arrow:hover::before { opacity: 1; }
+.kria-rack-arrow[data-direction="previous"] { left: 3cqw; }
+.kria-rack-arrow[data-direction="next"] { right: 3cqw; }
+
+.kria-rack-info {
+  position: absolute;
+  top: 55cqw;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 1.8cqw, 14px);
+}
+
+.kria-rack-info h2 {
+  margin: 0;
+  font-size: clamp(13px, 2.6cqw, 20px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.kria-rack-toggle {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid #1a1a1a;
+  border-radius: 999px;
+}
+
+.kria-rack-toggle button {
+  min-width: 58px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 9px !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background-color 250ms, color 250ms;
+}
+.kria-rack-toggle button[aria-pressed="true"] { background: #1a1a1a; color: #f7f5f0; }
+.kria-rack-toggle button:disabled { opacity: 0.35; cursor: default; }
+
+.kria-rack button:focus-visible { outline: 2px solid #283ec9; outline-offset: 2px; }
+
+/* Narrow screens: a taller box so the detail labels keep a readable size. */
+@container (max-width: 520px) {
+  .kria-rack-stage { aspect-ratio: 1 / 1; }
+  .kria-rack-bar { top: 15cqw; left: 6cqw; right: 6cqw; }
+  .kria-rack-item { top: 14cqw; width: 34cqw; margin-left: -17cqw; }
+  .kria-rack-item[data-selected="true"] { transform: translate(calc(var(--x) * 1cqw), -6cqw) scale(1.4); }
+  .kria-rack-caption { top: 66cqw; }
+  .kria-rack-arrow { top: 34cqw; }
+  .kria-rack-arrow[data-direction="previous"] { left: 1cqw; }
+  .kria-rack-arrow[data-direction="next"] { right: 1cqw; }
+  .kria-rack-info { top: 74cqw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kria-rack * { transition: none !important; }
+}
