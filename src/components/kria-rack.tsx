@@ -2,10 +2,13 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import blackBack from "@/assets/kria-rack/black-back.webp";
 import blackFront from "@/assets/kria-rack/black-front.webp";
+import blackRack from "@/assets/kria-rack/black-rack.webp";
 import rageBack from "@/assets/kria-rack/rage-back.webp";
 import rageFront from "@/assets/kria-rack/rage-front.webp";
+import rageRack from "@/assets/kria-rack/rage-rack.webp";
 import whiteBack from "@/assets/kria-rack/white-back.webp";
 import whiteFront from "@/assets/kria-rack/white-front.webp";
+import whiteRack from "@/assets/kria-rack/white-rack.webp";
 import { useLanguage } from "@/i18n/language-context";
 import { interpolate } from "@/i18n/translations";
 import "./kria-rack.css";
@@ -17,6 +20,9 @@ type Garment = {
   id: string;
   name: string;
   // Mockups: transparent images sharing the same framing (hanger hook at the top).
+  // rackImage is the angled view shown while the piece hangs on the rail;
+  // it gives way to frontImage when the piece turns to face the visitor.
+  rackImage: string;
   frontImage: string;
   backImage: string;
   // Optional artwork placed over the mockup, e.g.
@@ -26,21 +32,22 @@ type Garment = {
 };
 
 const garments: Garment[] = [
-  { id: "npc", name: "Don't Be an NPC Tee — White", frontImage: whiteFront, backImage: whiteBack },
-  { id: "dragon-soul", name: "Dragon Soul Tee — Black", frontImage: blackFront, backImage: blackBack },
-  { id: "sem-rage", name: "Sem Rage Sem Like Tee — Black", frontImage: rageFront, backImage: rageBack },
+  { id: "npc", name: "Don't Be an NPC Tee — White", rackImage: whiteRack, frontImage: whiteFront, backImage: whiteBack },
+  { id: "dragon-soul", name: "Dragon Soul Tee — Black", rackImage: blackRack, frontImage: blackFront, backImage: blackBack },
+  { id: "sem-rage", name: "Sem Rage Sem Like Tee — Black", rackImage: rageRack, frontImage: rageFront, backImage: rageBack },
 ];
 
 const SPACING = 11; // distance between hangers, in cqw
 const HOVER_SHIFT = 9.5; // how far neighbours slide away from the hovered piece
-const SIDE_ANGLE = -42; // resting rotation on the rack (the front mockups are already angled)
+const SIDE_ANGLE = -24; // resting rotation on the rack (the rack mockups are already angled)
 
 function Shirt({ garment, side }: { garment: Garment; side: "front" | "back" }) {
   const print = side === "front" ? garment.front : garment.back;
 
   return (
     <span className="kria-rack-face" data-side={side}>
-      <img className="kria-rack-mockup" src={side === "front" ? garment.frontImage : garment.backImage} alt="" draggable={false} />
+      {side === "front" && <img className="kria-rack-mockup" data-layer="rack" src={garment.rackImage} alt="" draggable={false} />}
+      <img className="kria-rack-mockup" data-layer={side} src={side === "front" ? garment.frontImage : garment.backImage} alt="" draggable={false} />
       {print && <img
         className="kria-rack-print"
         src={print.src}
@@ -112,6 +119,7 @@ export function KriaRack() {
               className="kria-rack-item"
               style={style}
               data-selected={isSelected}
+              data-facing={isSelected || hovered === index ? "front" : "rack"}
               data-sway={open || hovered === null ? undefined : hovered === index ? "main" : "side"}
               data-hidden={open && !isSelected}
               tabIndex={open && !isSelected ? -1 : 0}

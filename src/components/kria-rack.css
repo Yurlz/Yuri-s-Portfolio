@@ -111,7 +111,14 @@
   -webkit-backface-visibility: hidden;
 }
 .kria-rack-face[data-side="back"] { transform: rotateY(180deg); }
-.kria-rack-mockup { display: block; width: 100%; height: 100%; object-fit: contain; }
+.kria-rack-mockup { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; }
+
+/* On the rail a piece shows its angled view; turning to face the visitor
+   cross-fades it into the flat front while the hanger rotates. */
+.kria-rack-mockup[data-layer="rack"],
+.kria-rack-mockup[data-layer="front"] { transition: opacity 420ms ease 80ms; }
+.kria-rack-item[data-facing="rack"] .kria-rack-mockup[data-layer="front"],
+.kria-rack-item[data-facing="front"] .kria-rack-mockup[data-layer="rack"] { opacity: 0; }
 .kria-rack-print { position: absolute; height: auto; pointer-events: none; }
 
 .kria-rack-caption {
