@@ -1,9 +1,9 @@
-import { useEffect, useId, useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
-import printCrest from "@/assets/kria-rack/print-crest.png";
-import printFlame from "@/assets/kria-rack/print-flame.png";
-import printLine from "@/assets/kria-rack/print-line.png";
-import printNpc from "@/assets/kria-rack/print-npc.png";
+import blackBack from "@/assets/kria-rack/black-back.webp";
+import blackFront from "@/assets/kria-rack/black-front.webp";
+import offwhiteBack from "@/assets/kria-rack/offwhite-back.webp";
+import offwhiteFront from "@/assets/kria-rack/offwhite-front.webp";
 import { useLanguage } from "@/i18n/language-context";
 import { interpolate } from "@/i18n/translations";
 import "./kria-rack.css";
@@ -14,96 +14,38 @@ type Print = { src: string; left: number; top: number; width: number };
 type Garment = {
   id: string;
   name: string;
-  colour: string;
-  // Light garments get dark seams, dark garments get light seams.
-  dark: boolean;
+  // Mockups: transparent images sharing the same framing (hanger hook at the top).
+  frontImage: string;
+  backImage: string;
+  // Optional artwork placed over the mockup, e.g.
+  // front: { src: chestPrint, left: 56, top: 30, width: 14 }
   front?: Print;
   back?: Print;
-  // Optional full mockups (transparent PNG, hanger included or not).
-  // When set, they replace the drawn shirt for that side.
-  frontImage?: string;
-  backImage?: string;
 };
 
 const garments: Garment[] = [
-  {
-    id: "flame",
-    name: "Dragon Soul Tee — Black",
-    colour: "#151515",
-    dark: true,
-    front: { src: printFlame, left: 56.5, top: 31, width: 18 },
-  },
-  {
-    id: "line",
-    name: "Dragon Soul Tee — Off-white",
-    colour: "#f3efe4",
-    dark: false,
-    front: { src: printLine, left: 60, top: 30.5, width: 11 },
-    back: { src: printNpc, left: 29, top: 29, width: 42 },
-  },
-  {
-    id: "crest",
-    name: "Dragon Crest Tee — Black",
-    colour: "#151515",
-    dark: true,
-    front: { src: printCrest, left: 59.5, top: 31, width: 12 },
-  },
+  { id: "black", name: "Dragon Soul Tee — Black", frontImage: blackFront, backImage: blackBack },
+  { id: "offwhite", name: "Dragon Soul Tee — Off-white", frontImage: offwhiteFront, backImage: offwhiteBack },
+  { id: "crest", name: "Dragon Crest Tee — Black", frontImage: blackFront, backImage: blackBack },
 ];
 
 const SPACING = 11; // distance between hangers, in cqw
-const HOVER_SHIFT = 8.5; // how far neighbours slide away from the hovered piece
+const HOVER_SHIFT = 9.5; // how far neighbours slide away from the hovered piece
 const SIDE_ANGLE = -66; // resting rotation of a piece on the rack
 
 function Shirt({ garment, side }: { garment: Garment; side: "front" | "back" }) {
-  const gradient = useId();
-  const image = side === "front" ? garment.frontImage : garment.backImage;
   const print = side === "front" ? garment.front : garment.back;
-  const seam = garment.dark ? "rgba(255,255,255,0.13)" : "rgba(0,0,0,0.14)";
-  const inside = garment.dark ? "#070707" : "#cfcabd";
 
   return (
     <span className="kria-rack-face" data-side={side}>
-      {image ? <img className="kria-rack-mockup" src={image} alt="" draggable={false} /> : <>
-        <svg viewBox="0 -78 400 518" aria-hidden="true">
-          <defs>
-            <linearGradient id={gradient} x1="0" x2="1" y1="0" y2="0">
-              <stop offset="0" stopColor="#000" stopOpacity={garment.dark ? 0.5 : 0.16} />
-              <stop offset="0.22" stopColor="#000" stopOpacity="0" />
-              <stop offset="0.5" stopColor="#fff" stopOpacity={garment.dark ? 0.05 : 0.25} />
-              <stop offset="0.78" stopColor="#000" stopOpacity="0" />
-              <stop offset="1" stopColor="#000" stopOpacity={garment.dark ? 0.5 : 0.16} />
-            </linearGradient>
-          </defs>
-          <path d="M200 -10V-30C200 -46 223 -42 223 -57C223 -74 196 -76 190 -59" fill="none" stroke="#9b9b98" strokeWidth="4.5" strokeLinecap="round" />
-          <path d="M146 24L200 -8L254 24" fill="none" stroke="#4a3120" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" />
-          {side === "front" && <path d="M150 18C168 8 232 8 250 18C232 56 168 56 150 18Z" fill={inside} />}
-          <path
-            d={side === "front"
-              ? "M150 18C168 56 232 56 250 18L300 30L392 110L345 172L305 142V425Q200 437 95 425V142L55 172L8 110L100 30Z"
-              : "M150 18C172 32 228 32 250 18L300 30L392 110L345 172L305 142V425Q200 437 95 425V142L55 172L8 110L100 30Z"}
-            fill={garment.colour}
-          />
-          <path
-            d="M150 18C172 32 228 32 250 18L300 30L392 110L345 172L305 142V425Q200 437 95 425V142L55 172L8 110L100 30Z"
-            fill={`url(#${gradient})`}
-          />
-          <g fill="none" stroke={seam} strokeWidth="2" strokeLinecap="round">
-            {side === "front"
-              ? <path d="M143 22C163 68 237 68 257 22" />
-              : <path d="M144 22C170 42 230 42 256 22" />}
-            <path d="M95 142C92 110 96 70 112 40M305 142C308 110 304 70 288 40" />
-            <path d="M14 117L62 165M386 117L338 165" />
-            <path d="M95 414Q200 426 305 414" />
-          </g>
-        </svg>
-        {print && <img
-          className="kria-rack-print"
-          src={print.src}
-          alt=""
-          draggable={false}
-          style={{ left: `${print.left}%`, top: `${print.top}%`, width: `${print.width}%` }}
-        />}
-      </>}
+      <img className="kria-rack-mockup" src={side === "front" ? garment.frontImage : garment.backImage} alt="" draggable={false} />
+      {print && <img
+        className="kria-rack-print"
+        src={print.src}
+        alt=""
+        draggable={false}
+        style={{ left: `${print.left}%`, top: `${print.top}%`, width: `${print.width}%` }}
+      />}
     </span>
   );
 }
@@ -117,7 +59,6 @@ export function KriaRack() {
   const count = garments.length;
   const open = selected !== null;
   const current = open ? garments[selected] : null;
-  const hasBack = Boolean(current?.back || current?.backImage);
 
   const select = (index: number | null) => {
     setSelected(index === null ? null : (index + count) % count);
@@ -171,14 +112,14 @@ export function KriaRack() {
               data-selected={isSelected}
               data-hidden={open && !isSelected}
               tabIndex={open && !isSelected ? -1 : 0}
-              aria-label={isSelected && hasBack ? `${garment.name} — ${side === "front" ? copy.back : copy.front}` : interpolate(copy.view, { name: garment.name })}
+              aria-label={isSelected ? `${garment.name} — ${side === "front" ? copy.back : copy.front}` : interpolate(copy.view, { name: garment.name })}
               onPointerEnter={(event) => { if (!open && event.pointerType === "mouse") setHovered(index); }}
               // Keyboard focus only: reacting to a tap's focus would move the piece mid-click.
               onFocus={(event) => { if (!open && event.currentTarget.matches(":focus-visible")) setHovered(index); }}
               onBlur={() => setHovered((value) => (value === index ? null : value))}
               onClick={() => {
                 if (!isSelected) select(index);
-                else if (hasBack) setSide(side === "front" ? "back" : "front");
+                else setSide(side === "front" ? "back" : "front");
               }}
             >
               <span className="kria-rack-swing">
@@ -211,7 +152,6 @@ export function KriaRack() {
                   key={option}
                   type="button"
                   aria-pressed={side === option}
-                  disabled={option === "back" && !hasBack}
                   tabIndex={open ? 0 : -1}
                   onClick={() => setSide(option)}
                 >
