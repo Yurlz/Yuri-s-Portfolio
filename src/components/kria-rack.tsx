@@ -2,6 +2,8 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import blackBack from "@/assets/kria-rack/black-back.webp";
 import blackFront from "@/assets/kria-rack/black-front.webp";
+import rageBack from "@/assets/kria-rack/rage-back.webp";
+import rageFront from "@/assets/kria-rack/rage-front.webp";
 import whiteBack from "@/assets/kria-rack/white-back.webp";
 import whiteFront from "@/assets/kria-rack/white-front.webp";
 import { useLanguage } from "@/i18n/language-context";
@@ -26,9 +28,10 @@ type Garment = {
 const garments: Garment[] = [
   { id: "npc", name: "Don't Be an NPC Tee — White", frontImage: whiteFront, backImage: whiteBack },
   { id: "dragon-soul", name: "Dragon Soul Tee — Black", frontImage: blackFront, backImage: blackBack },
+  { id: "sem-rage", name: "Sem Rage Sem Like Tee — Black", frontImage: rageFront, backImage: rageBack },
 ];
 
-const SPACING = 13; // distance between hangers, in cqw
+const SPACING = 11; // distance between hangers, in cqw
 const HOVER_SHIFT = 9.5; // how far neighbours slide away from the hovered piece
 const SIDE_ANGLE = -66; // resting rotation of a piece on the rack
 
